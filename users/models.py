@@ -2,10 +2,8 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractUser
 
-from django.contrib.auth import get_user_model
+from django.conf import settings
 
-
-# User = get_user_model()
 
 
 class CustomUser(AbstractUser):
@@ -16,8 +14,8 @@ class CustomUser(AbstractUser):
     is_blocked = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-    pass
     
     
-# class BlockedUser(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+class BlockedUser(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)

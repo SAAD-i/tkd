@@ -15,6 +15,10 @@ User = get_user_model()
 
 class RegisterView(APIView):
     def post(self, request):
+        email = request.data['email']
+        user = get_object_or_404(User, email=email)
+        if user:
+            return Response({'message':'User already exsits'},status.HTTP_406_NOT_ACCEPTABLE)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

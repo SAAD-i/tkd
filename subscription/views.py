@@ -19,8 +19,8 @@ class SubscriptionView(APIView):
     # permission_classes = []
     def post(self, request):
         subscription = Subscription()
-        user_id = request.data['user']
-        user = get_object_or_404(User, id=user_id)
+        email = request.data['user']
+        user = get_object_or_404(User, email=email)
         plan_id = request.data['plan']
         plan = get_object_or_404(SubscriptionPlan, id=plan_id)
         end_date = request.data['end_date']
@@ -30,6 +30,6 @@ class SubscriptionView(APIView):
         subscription.save()
         user.is_pro = True
         user.save()
-        return Response('Hello')
+        return Response('subscription added.')
                         
         

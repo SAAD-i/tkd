@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'tools',
     'users',
     'subscription',
+    'pages',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',

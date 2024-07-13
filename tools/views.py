@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import APIView
+from rest_framework.decorators import APIView, api_view
 from django.shortcuts import get_object_or_404
 from .models import Tool, ToolCategory, ToolUsage
 from .serializers import ToolSerializer, ToolCategorySerializer, ToolUsageSerializer
@@ -125,7 +125,7 @@ class ToolCategoryView(APIView):
 class ToolCategoriesView(APIView):
     def get(self, request):
         tool_categories = ToolCategory.objects.all()
-        serializer = ToolCategorySerializer(tool_categories, many=False)
+        serializer = ToolCategorySerializer(tool_categories, many=True)
         if serializer:
             return Response(serializer.data, status.HTTP_200_OK)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
@@ -133,3 +133,12 @@ class ToolCategoriesView(APIView):
 
 
 #All Tools Code will be written here.
+
+
+# @api_view(['post'])
+# def remove_background(request):
+#     # Extract image data from request
+#     if request.method == 'POST' and request.FILES.get('image'):
+#         image_file = request.FILES['image']
+        
+    

@@ -16,9 +16,8 @@ User = get_user_model()
 class RegisterView(APIView):
     def post(self, request):
         email = request.data['email']
-        user = get_object_or_404(User, email=email)
-        if user:
-            return Response({'message':'User already exsits'},status.HTTP_406_NOT_ACCEPTABLE)
+        if User.objects.filter(email=email).exists():
+            return Response({'message': 'User already exists'}, status.HTTP_409_CONFLICT)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -26,22 +25,18 @@ class RegisterView(APIView):
             return Response({
                 'refresh' : str(refresh),
                 'access' : str(refresh.access_token), 
-            }, status= status.HTTP_201_CREATED)
+            }, status= status.HTTP_200_OK)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class CurrentUserView(APIView):
     
-    # permission_classes = [IsAuthenticated]
     
-    def get(self, request):
-       token = request.data['token']
-       decoded_token = decode_jwt_token(token)
-       current_user = get_object_or_404(User, id=decoded_token['user_id'])
-       data = {
-           'username' : current_user.username,
-           'email':current_user.email,
-       }
-       return Response(data)
+    def post(self, request, id):
+       current_user = get_object_or_404(User, id=id)
+       serializer = UserSerializer(current_user, many=False)
+       if serializer:
+           return Response(serializer.data, status.HTTP_200_OK)
+       return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
    
 class UsersView(APIView):
     def get(self, request):

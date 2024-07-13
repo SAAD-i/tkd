@@ -1,6 +1,6 @@
 from django.db import models
 from tools.models import Tool
-
+from tools.models import ToolCategory
 class SingletonModel(models.Model):
     class Meta:
         abstract = True
@@ -16,6 +16,7 @@ class SingletonModel(models.Model):
 
 class AdminSetting(SingletonModel):
     homepage_tools = models.ManyToManyField(Tool)
+    homepage_categories = models.ManyToManyField(ToolCategory)
     visits = models.BigIntegerField(default=0)
     total_signups = models.BigIntegerField(default=0)
     total_users = models.BigIntegerField(default=0)    

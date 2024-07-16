@@ -133,12 +133,23 @@ class ToolCategoriesView(APIView):
 
 
 #All Tools Code will be written here.
-
-
-# @api_view(['post'])
-# def remove_background(request):
-#     # Extract image data from request
-#     if request.method == 'POST' and request.FILES.get('image'):
-#         image_file = request.FILES['image']
-        
+from rest_framework.parsers import MultiPartParser, FormParser
+import base64
+from io import BytesIO
+from rembg import remove
+from PIL import Image
+class RemoveBackgroundTool(APIView):
     
+    parser_classes = (MultiPartParser, FormParser)
+    
+    def post(self, request):
+        image_file = request.FILES['image']
+        image = Image.open(image_file)
+        output = remove(image)
+        buffer = BytesIO()
+        output.save(buffer, format='PNG')
+        buffer.seek(0)
+
+        # Encode the image as base64
+        encoded_image = base64.b64encode(buffer.read()).decode('utf-8')
+        return Response(status=status.HTTP_200_OK, data=encoded_image)

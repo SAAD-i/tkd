@@ -2,7 +2,9 @@ from django.urls import path
 
 from .views import ToolView, ToolsView, ToolUsageView
 from .views import ToolsUsageView, ToolCategoryView, ToolCategoriesView
-# from .views import image_to_text
+from .views import RemoveBackgroundTool
+
+
 
 urlpatterns = [
     
@@ -24,7 +26,7 @@ urlpatterns = [
     
     ##############################################
     
-    # path('image_to_text/',image_to_text(),name="image_to_text"),
+    path('remove-background/',RemoveBackgroundTool.as_view(),name="remove_background"),
     # path('text_to_image/',view_name,name=view_name),
     # path('jpg_to_png/',view_name,name=view_name),
     # path('png_to_jpg/',view_name,name=view_name),

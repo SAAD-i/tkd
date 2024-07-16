@@ -138,18 +138,69 @@ import base64
 from io import BytesIO
 from rembg import remove
 from PIL import Image
-class RemoveBackgroundTool(APIView):
+
+class RemoveImageBackgroundTool(APIView):
     
     parser_classes = (MultiPartParser, FormParser)
     
     def post(self, request):
         image_file = request.FILES['image']
-        image = Image.open(image_file)
-        output = remove(image)
-        buffer = BytesIO()
-        output.save(buffer, format='PNG')
-        buffer.seek(0)
+        if image_file:
+            image = Image.open(image_file)
+            output = remove(image)
+            buffer = BytesIO()
+            output.save(buffer, format='PNG')
+            buffer.seek(0)
+            encoded_image = base64.b64encode(buffer.read()).decode('utf-8')
+            return Response(status=status.HTTP_200_OK, data=encoded_image)
+        return Response(status=status.HTTP_400_BAD_REQUEST, message="Image not found")
 
-        # Encode the image as base64
-        encoded_image = base64.b64encode(buffer.read()).decode('utf-8')
-        return Response(status=status.HTTP_200_OK, data=encoded_image)
+        
+class JpgToPngTool(APIView):
+    
+    parser_classes = (MultiPartParser, FormParser)
+    
+    def post(self, request):
+        image_file = request.FILES['image']
+        if image_file:
+            image = Image.open(image_file)
+            buffer = BytesIO()
+            image.save(buffer, format='PNG')
+            buffer.seek(0)
+            encoded_image = base64.b64encode(buffer.read()).decode('utf-8')
+            return Response(status=status.HTTP_200_OK, data=encoded_image, content_type='image/png')
+        return Response(status=status.HTTP_400_BAD_REQUEST, message="Image not found")
+    
+class PngToJpegTool(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    
+    def post(self, request):
+        try:
+            image_file = request.FILES.get('image')
+            if image_file:
+                image = Image.open(image_file)
+                buffer = BytesIO()
+                # Convert PNG to JPEG
+                image.convert('RGB').save(buffer, format='JPEG')
+                buffer.seek(0)
+                # Encode to base64
+                encoded_image = base64.b64encode(buffer.read()).decode('utf-8')
+                return Response(data={'encoded_image': encoded_image}, status=status.HTTP_200_OK)
+            else:
+                return Response(data={'message': 'Image not found'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(data={'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# class ImageToTextTool(APIView):
+#     parser_classes = (MultiPartParser, FormParser)
+#     def(self, request):
+#         image_file = request.files['image']
+#         extracted_text = ''
+#         image_data = np.fromstring(image_file.read(), np.uint8)
+#         image = cv2.imdecode(image_data, cv2.IMREAD_COLOR)
+#         if image is not None:
+#             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#             extracted_text = pytesseract.image_to_string(gray_image)
+#             return extracted_text
+#         else:
+#             return "Error: Could not read the uploaded image."

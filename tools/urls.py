@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import ToolView, ToolsView, ToolUsageView
 from .views import ToolsUsageView, ToolCategoryView, ToolCategoriesView
-from .views import RemoveBackgroundTool
+from .views import RemoveImageBackgroundTool, JpgToPngTool, PngToJpegTool
 
 
 
@@ -26,7 +26,10 @@ urlpatterns = [
     
     ##############################################
     
-    path('remove-background/',RemoveBackgroundTool.as_view(),name="remove_background"),
+    path('remove-background/',RemoveImageBackgroundTool.as_view(),name="remove_background"),
+    path('jpg-to-png/',JpgToPngTool.as_view(),name="jpg_to_png"),
+    path('png-to-jpeg/',PngToJpegTool.as_view(),name="png_to_jpeg"),
+
     # path('text_to_image/',view_name,name=view_name),
     # path('jpg_to_png/',view_name,name=view_name),
     # path('png_to_jpg/',view_name,name=view_name),

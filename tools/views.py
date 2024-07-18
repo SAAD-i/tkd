@@ -191,16 +191,65 @@ class PngToJpegTool(APIView):
         except Exception as e:
             return Response(data={'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# class ImageToTextTool(APIView):
-#     parser_classes = (MultiPartParser, FormParser)
-#     def(self, request):
-#         image_file = request.files['image']
-#         extracted_text = ''
-#         image_data = np.fromstring(image_file.read(), np.uint8)
-#         image = cv2.imdecode(image_data, cv2.IMREAD_COLOR)
-#         if image is not None:
-#             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-#             extracted_text = pytesseract.image_to_string(gray_image)
-#             return extracted_text
-#         else:
-#             return "Error: Could not read the uploaded image."
+
+
+
+import io
+from django.http import FileResponse
+from rest_framework.parsers import JSONParser
+from gtts import gTTS
+class TextToAudioTool(APIView):
+    parser_classes = [JSONParser]
+    
+    def post(self, request):
+        text = request.data.get('text', '')
+        if not text:
+            return Response({'message': 'Text field is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Generate audio using gTTS
+        tts = gTTS(text)
+        
+        # Create a BytesIO object to store the audio
+        fp = io.BytesIO()
+        tts.write_to_fp(fp)
+        fp.seek(0)
+        # Create a FileResponse object to send the audio file
+        response = FileResponse(fp, as_attachment=True, filename='audio.mp3')
+        response['Content-Type'] = 'audio/mpeg'
+        response['Content-Disposition'] = 'attachment; filename="audio.mp3"'
+    
+
+        return response
+    
+
+import os
+import tempfile
+from pdf2docx import Converter
+from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+
+class PdfToWordTool(APIView):
+    def post(self, request):
+        pdf_file = request.FILES['pdf']
+
+        # Create a temporary directory within the base path component
+        with tempfile.TemporaryDirectory(dir=settings.MEDIA_ROOT) as temp_dir:
+            # Save the uploaded PDF file to the temporary directory
+            temp_pdf_file_path = os.path.join(temp_dir, 'temp.pdf')
+            with open(temp_pdf_file_path, 'wb+') as f:
+                f.write(pdf_file.read())
+
+            # Convert PDF to DOCX
+            word_file_io = io.BytesIO()
+            cv = Converter(temp_pdf_file_path)
+            cv.convert(word_file_io)
+            cv.close()
+
+            # Ensure the cursor is at the beginning of the BytesIO object
+            word_file_io.seek(0)
+
+            # Return the generated Word document in the response
+            response = HttpResponse(word_file_io.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            response['Content-Disposition'] = 'attachment; filename="converted-document.docx"'
+            return response

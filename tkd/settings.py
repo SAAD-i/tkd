@@ -134,14 +134,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+import os
 STATIC_URL = 'static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -149,3 +149,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000', 
     'http://localhost:3001', 
 ]
+
+# CORS_ALLOWED_ORIGINS = ['*']  # Allow all origins
+# CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']  # Allow all methods
+# CORS_ALLOW_HEADERS = ['*']  # Allow all headers

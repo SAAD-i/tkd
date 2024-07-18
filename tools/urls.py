@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import ToolView, ToolsView, ToolUsageView
 from .views import ToolsUsageView, ToolCategoryView, ToolCategoriesView
-from .views import RemoveImageBackgroundTool, JpgToPngTool, PngToJpegTool
+from .views import RemoveImageBackgroundTool, JpgToPngTool, PngToJpegTool, TextToAudioTool, PdfToWordTool
 
 
 
@@ -29,6 +29,10 @@ urlpatterns = [
     path('remove-background/',RemoveImageBackgroundTool.as_view(),name="remove_background"),
     path('jpg-to-png/',JpgToPngTool.as_view(),name="jpg_to_png"),
     path('png-to-jpeg/',PngToJpegTool.as_view(),name="png_to_jpeg"),
+    path('text-to-audio/',TextToAudioTool.as_view(),name="text_to_audio"),
+    path('pdf-to-word/',PdfToWordTool.as_view(),name="pdf_to_word"),
+    
+    
 
     # path('text_to_image/',view_name,name=view_name),
     # path('jpg_to_png/',view_name,name=view_name),

@@ -7,6 +7,8 @@ class Page(models.Model):
     title = models.CharField(max_length=250, unique=True)
     content = models.TextField()
     slug = models.SlugField(max_length=250 ,unique=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     
     def save(self, *args, **kwargs):
         if not self.slug:

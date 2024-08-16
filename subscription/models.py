@@ -8,7 +8,9 @@ class SubscriptionPlan(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     description = models.TextField(default='description')
     features = models.TextField(default='features')
-    duration = models.DurationField()
+    duration = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
 class Subscription(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -16,3 +18,5 @@ class Subscription(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)

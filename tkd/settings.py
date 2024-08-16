@@ -36,6 +36,9 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
+# settings.py
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # or cache, file, etc.
+
 
 from datetime import timedelta
 
@@ -55,6 +58,8 @@ SIMPLE_JWT = {
 }
 
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -65,6 +70,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    
 ]
 
 
@@ -148,8 +154,19 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000', 
     'http://localhost:3001', 
+    'http://192.168.18.152:3000',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://192.168.18.152:3000',
+    
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 # CORS_ALLOWED_ORIGINS = ['*']  # Allow all origins
-# CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']  # Allow all methods
+CORS_ALLOW_METHODS = ['*']  # Allow all methods
 # CORS_ALLOW_HEADERS = ['*']  # Allow all headers
+
+
